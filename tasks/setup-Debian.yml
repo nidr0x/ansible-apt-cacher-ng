@@ -1,0 +1,27 @@
+- name: Installing apt-cacher-ng (server)
+  apt:
+     name: "apt-cacher-ng"
+     state: "present"
+
+- name: Creating specified cache directory
+  file:
+    path: "{{ apt_cacher_ng_cachedir }}"
+    owner: apt-cacher-ng
+    group: apt-cacher-ng
+
+- name: Deploying configuration files for apt-cacher-ng
+  template:
+      src: "etc/apt-cacher-ng/{{ item }}.j2"
+      dest: "/etc/apt-cacher-ng/{{ item }}"
+      owner: "root"
+      group: "root"
+      mode: "u=rwx,g=rxs,o=rx"
+  notify: restart apt-cacher-ng
+  with_items:
+    - "{{ apt_cacher_config_files }}"
+
+- name: Enable apt-cacher-ng on boot
+  service:
+    name: apt-cacher-ng
+    state: started
+    enabled: yes

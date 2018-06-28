@@ -1,0 +1,33 @@
+{% if apt_catcher_ng_cachedir is defined %}
+CacheDir: {{ apt_cacher_ng_cachedir }}
+{% endif %}
+{% if apt_cacher_ng_cachedir is not defined %}
+CacheDir: /var/cache/apt-cacher-ng
+{% endif %}
+{% if apt_cacher_ng_pidfile is defined %}
+PidFile: {{ apt_cacher_ng_pidfile }}
+{% endif %}
+{% if apt_cacher_ng_pidfile is not defined %}
+PidFile: /var/run/apt-cacher-ng/pid
+{% endif %}
+{% if apt_cacher_ng_logdir is defined %}
+LogDir: {{ apt_cacher_ng_logdir }}
+{% endif %}
+{% if apt_cacher_ng_logdir is not defined %}
+LogDir: /var/log/apt-cacher-ng
+{% endif %}
+{% if apt_cacher_ng_port is defined %} 
+Port: {{ apt_cacher_ng_port }}
+{% endif %}
+{% if apt_cacher_ng_port is not defined %}
+Port: 3142
+{% endif %}
+{% if apt_cacher_ng_bindaddress is defined %}
+BindAddress: {{ apt_cacher_ng_bindaddress }}
+{% endif %}
+{% if apt_cacher_ng_bindaddress is not defined %}
+BindAddress: 0.0.0.0
+{% endif %}
+
+
+

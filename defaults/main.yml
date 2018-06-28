@@ -1,0 +1,20 @@
+---
+# defaults file for ansible-apt-cacherng
+
+apt_cacher_ng_port: '3142'
+
+apt_cacher_ng_cachedir: '/var/cache/apt-cacher-ng'
+
+apt_cacher_ng_logdir: '/var/log/apt-cacher-ng'
+
+apt_cacher_ng_bindaddress: '0.0.0.0'
+
+apt_cacher_ng_pidfile: '/var/run/apt-cacher-ng/pid'
+
+apt_cacher_config_files:
+  - 'acng.conf'
+  - 'security.conf'
+
+apt_cacher_ng_account:
+  - name: 'admin'
+    password: '1234'
