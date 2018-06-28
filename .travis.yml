@@ -1,35 +1,18 @@
-language: generic
-
-branches:
-  only:
-    - master
-
-services:
-  - docker
-
-env:
-  matrix:
-    - DISTRIBUTIONS=debian.wheezy  ANSIBLE_VERSION=2.5.5
-    - DISTRIBUTIONS=debian.jessie  ANSIBLE_VERSION=2.5.5
-    - DISTRIBUTIONS=debian.stretch ANSIBLE_VERSION=2.5.5
-    - DISTRIBUTIONS=centos.7       ANSIBLE_VERSION=2.5.5
-    - DISTRIBUTIONS=ubuntu.xenial  ANSIBLE_VERSION=2.5.5
-
+---
+language: python
+python: "2.7"
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq python-apt python-pycurl
+install:
+  - pip install ansible
+  - echo -e 'localhost  ansible_connection=local' > tests/inventory
+  - echo -e '[defaults]\nroles_path = ../\nhostfile = ./tests/inventory' > ansible.cfg
 script:
-  - make lint
-  - make test
-
-jobs:
-  include:
-    - stage: release
-      script:
-        - gem install chandler -v 0.7.0
-        - chandler push `perl -lne '/^## \[(?!Unreleased)([\w.-]+)\] - [\w-]+$/ && print $1;' CHANGELOG.md | head -1`
-
-notifications:
-  webhooks:
-    urls:
-      - https://galaxy.ansible.com/api/v1/notifications/
-    on_success: change
-    on_failure: always
-on_start: never
+  - ansible-playbook --syntax-check tests/role.yml
+  - ansible-playbook --sudo -v --diff tests/role.yml
+  - >
+    ansible-playbook --sudo tests/role.yml
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
